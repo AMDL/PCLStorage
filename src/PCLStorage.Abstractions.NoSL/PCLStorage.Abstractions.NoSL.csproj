@@ -49,6 +49,9 @@
     <Compile Include="..\PCLStorage.Abstractions\ExistenceCheckResult.cs">
       <Link>ExistenceCheckResult.cs</Link>
     </Compile>
+    <Compile Include="..\PCLStorage.Abstractions\FileAttributes.cs">
+      <Link>FileAttributes.cs</Link>
+    </Compile>
     <Compile Include="..\PCLStorage.Abstractions\FileExtensions.cs">
       <Link>FileExtensions.cs</Link>
     </Compile>

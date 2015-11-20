@@ -18,6 +18,7 @@ namespace PCLStorage
         readonly string _name;
         readonly string _path;
         readonly bool _canDelete;
+        private Lazy<FileAttributes> _attrLazy;
 
         /// <summary>
         /// Creates a new <see cref="FileSystemFolder" /> corresponding to a specified path
@@ -29,6 +30,7 @@ namespace PCLStorage
             _name = System.IO.Path.GetFileName(path);
             _path = path;
             _canDelete = canDelete;
+            _attrLazy = new Lazy<FileAttributes>(GetAttributes);
         }
 
         /// <summary>
@@ -55,6 +57,14 @@ namespace PCLStorage
         public string Path
         {
             get { return _path; }
+        }
+
+        /// <summary>
+        /// The folder's attributes
+        /// </summary>
+        public FileAttributes Attributes
+        {
+            get { return _attrLazy.Value; }
         }
 
         /// <summary>
@@ -288,6 +298,15 @@ namespace PCLStorage
             {
                 throw new PCLStorage.Exceptions.DirectoryNotFoundException("Directory does not exist: " + Path);
             }
+        }
+
+        private FileAttributes GetAttributes()
+        {
+            var attributes = FileAttributes.Normal;
+            var attrs = System.IO.File.GetAttributes(Path);
+            if ((attrs & System.IO.FileAttributes.ReparsePoint) != 0)
+                attributes |= FileAttributes.SymbolicLink;
+            return attributes;
         }
     }
 }

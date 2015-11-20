@@ -30,6 +30,7 @@ namespace PCLStorage
         readonly IsolatedStorageFile _root;
         string _name;
         string _path;
+        private Lazy<FileAttributes> _attrLazy;
 
         /// <summary>
         /// Creates a new <see cref="IsoStoreFile"/> based on the path to it within an <see cref="IsolatedStorageFile"/>
@@ -41,6 +42,7 @@ namespace PCLStorage
             _root = root;
             _path = path;
             _name = System.IO.Path.GetFileName(path);
+            _attrLazy = new Lazy<FileAttributes>(GetAttributes);
         }
 
         /// <summary>
@@ -68,6 +70,14 @@ namespace PCLStorage
         public string Path
         {
             get { return _path; }
+        }
+
+        /// <summary>
+        /// The file's attributes
+        /// </summary>
+        public FileAttributes Attributes
+        {
+            get { return _attrLazy.Value; }
         }
 
         /// <summary>
@@ -233,6 +243,15 @@ namespace PCLStorage
                 _name = candidateName;
                 return;
             }
+        }
+
+        private FileAttributes GetAttributes()
+        {
+            var attributes = FileAttributes.Normal;
+            var attrs = File.GetAttributes(Path);
+            if ((attrs & System.IO.FileAttributes.ReparsePoint) != 0)
+                attributes |= FileAttributes.SymbolicLink;
+            return attributes;
         }
     }
 }

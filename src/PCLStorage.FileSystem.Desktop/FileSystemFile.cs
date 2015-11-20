@@ -18,6 +18,7 @@ namespace PCLStorage
     {
         string _name;
         string _path;
+        private Lazy<FileAttributes> _attrLazy;
 
         /// <summary>
         /// Creates a new <see cref="FileSystemFile"/> corresponding to the specified path
@@ -27,6 +28,7 @@ namespace PCLStorage
         {
             _name = System.IO.Path.GetFileName(path);
             _path = path;
+            _attrLazy = new Lazy<FileAttributes>(GetAttributes);
         }
 
         /// <summary>
@@ -43,6 +45,14 @@ namespace PCLStorage
         public string Path
         {
             get { return _path; }
+        }
+
+        /// <summary>
+        /// The file's attributes
+        /// </summary>
+        public FileAttributes Attributes
+        {
+            get { return _attrLazy.Value; }
         }
 
         /// <summary>
@@ -154,6 +164,15 @@ namespace PCLStorage
                 _name = candidateName;
                 return;
             }
+        }
+
+        private FileAttributes GetAttributes()
+        {
+            var attributes = FileAttributes.Normal;
+            var attrs = System.IO.File.GetAttributes(Path);
+            if ((attrs & System.IO.FileAttributes.ReparsePoint) != 0)
+                attributes |= FileAttributes.SymbolicLink;
+            return attributes;
         }
     }
 }

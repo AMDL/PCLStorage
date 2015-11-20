@@ -38,6 +38,11 @@ namespace PCLStorage
         string Path { get; }
 
         /// <summary>
+        /// The file's attributes
+        /// </summary>
+        FileAttributes Attributes { get; }
+
+        /// <summary>
         /// Opens the file
         /// </summary>
         /// <param name="fileAccess">Specifies whether the file should be opened in read-only or read/write mode</param>

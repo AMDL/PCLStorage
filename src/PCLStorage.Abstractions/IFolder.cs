@@ -45,6 +45,11 @@ namespace PCLStorage
         string Path { get; }
 
         /// <summary>
+        /// The folder's attributes
+        /// </summary>
+        FileAttributes Attributes { get; }
+
+        /// <summary>
         /// Creates a file in this folder
         /// </summary>
         /// <param name="desiredName">The name of the file to create</param>
