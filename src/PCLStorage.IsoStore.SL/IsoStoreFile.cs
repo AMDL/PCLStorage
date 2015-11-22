@@ -249,6 +249,8 @@ namespace PCLStorage
         {
             var attributes = FileAttributes.Normal;
             var attrs = File.GetAttributes(Path);
+            if ((attrs & System.IO.FileAttributes.ReadOnly) != 0)
+                attributes |= FileAttributes.ReadOnly;
             if ((attrs & System.IO.FileAttributes.ReparsePoint) != 0)
                 attributes |= FileAttributes.SymbolicLink;
             return attributes;
